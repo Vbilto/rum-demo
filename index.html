@@ -1,1 +1,14 @@
-index.html
+<script charset="UTF-8" type="text/javascript">
+window["adrum-start-time"] = new Date().getTime();
+(function(config){
+    config.appKey = "SY-AAC-MTW";
+    config.adrumExtUrlHttp = "http://cdn.appdynamics.com";
+    config.adrumExtUrlHttps = "https://cdn.appdynamics.com";
+    config.beaconUrlHttp = "http://syd-col.eum-appdynamics.com";
+    config.beaconUrlHttps = "https://syd-col.eum-appdynamics.com";
+    config.useHTTPSAlways = true;
+    config.resTiming = {"bufSize":200,"clearResTimingOnBeaconSend":true};
+    config.maxUrlLength = 512;
+})(window["adrum-config"] || (window["adrum-config"] = {}));
+</script>
+<script src="//cdn.appdynamics.com/adrum/adrum-25.5.0.4580.js"></script>
