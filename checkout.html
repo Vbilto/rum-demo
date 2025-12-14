@@ -1,0 +1,60 @@
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - Checkout</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - Checkout</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>Checkout step simulation</h2>
+  <p>Generates validation-style calls that look like cart validation, pricing, inventory checks.</p>
+  <button onclick="call('Cart Validate', 1200)">Validate Cart (1.2s)</button>
+  <button onclick="call('Price Recalc', 900)">Recalculate Price (0.9s)</button>
+  <button onclick="call('Inventory Check', 1600)">Inventory Check (1.6s)</button>
+  <button onclick="callFail()">Downstream Failure (502)</button>
+  <p id="cstatus" class="small"></p>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+<script>
+  const el = document.getElementById("cstatus");
+  function msg(t, cls){ el.className="small "+(cls||""); el.textContent=t; }
+
+  async function call(name, ms){
+    msg(name + "…");
+    await fetch("https://httpstat.us/200?sleep=" + ms, { cache: "no-store" }).then(r=>r.text());
+    msg(name + " ✅", "good");
+  }
+  async function callFail(){
+    msg("Downstream Failure…");
+    await fetch("https://httpstat.us/502", { cache: "no-store" }).then(r=>r.text());
+    msg("Failure recorded ❌", "bad");
+  }
+</script>
+
+    </body>
+    </html>

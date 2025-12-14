@@ -1,0 +1,65 @@
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - SPA / Virtual Pages</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - SPA / Virtual Pages</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>SPA / Virtual Pages</h2>
+  <p>This page simulates a Single Page App by changing "views" without full reload.</p>
+  <button onclick="view('Home')">View: Home</button>
+  <button onclick="view('Search')">View: Search</button>
+  <button onclick="view('Checkout')">View: Checkout</button>
+  <button onclick="view('Payment')">View: Payment</button>
+  <p id="v" class="small"></p>
+</div>
+
+<div class="card">
+  <h2>What to demo</h2>
+  <ul>
+    <li>Virtual pages appear as distinct page names in the Browser App (depending on agent configuration).</li>
+    <li>Each view also generates an AJAX call for activity.</li>
+  </ul>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+<script>
+  const el = document.getElementById("v");
+  function view(name){
+    el.textContent = "Switched to view: " + name;
+
+    if (window.ADRUM && typeof window.ADRUM.markVirtualPageLoad === "function") {
+      window.ADRUM.markVirtualPageLoad("RUM-SPA-" + name);
+    }
+
+    fetch("https://httpstat.us/200?sleep=600", { cache: "no-store" }).then(r=>r.text());
+  }
+</script>
+
+    </body>
+    </html>

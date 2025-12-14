@@ -1,0 +1,45 @@
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - Slow Page</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+<script>
+  const start = Date.now();
+  while (Date.now() - start < 3000) {} // ~3s blocking during load
+</script>
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - Slow Page</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>Artificial slowness</h2>
+  <p>This page blocks the main thread for ~3 seconds during load to create high page response time.</p>
+  <p>Refresh this page 3–5 times to create clear outliers in response time distribution.</p>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+    </body>
+    </html>

@@ -1,0 +1,83 @@
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - Resource Performance</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - Resource Performance</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>Resource timing demo</h2>
+  <p>Loads large external resources to create measurable download timing.</p>
+  <button onclick="loadBig()">Load Large Resource (4MB)</button>
+  <button onclick="loadMany()">Load 6 Resources</button>
+  <p id="rstatus" class="small"></p>
+</div>
+
+<div class="card">
+  <h2>Where it shows in AppDynamics</h2>
+  <ul>
+    <li><b>Resource Performance</b> (download time / size)</li>
+    <li><b>Pages</b> (end-user response time increases)</li>
+  </ul>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+<script>
+  const el = document.getElementById("rstatus");
+  function msg(t){ el.textContent=t; }
+
+  function loadOne(bytes){
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = "https://speed.cloudflare.com/__down?bytes=" + bytes + "&cachebust=" + Date.now() + Math.random();
+    });
+  }
+
+  async function loadBig(){
+    msg("Loading large resource…");
+    await loadOne(4000000);
+    msg("Loaded. Check Resource Performance in AppDynamics.");
+  }
+
+  async function loadMany(){
+    msg("Loading 6 resources…");
+    await Promise.all([
+      loadOne(800000),
+      loadOne(1200000),
+      loadOne(1600000),
+      loadOne(500000),
+      loadOne(900000),
+      loadOne(1400000)
+    ]);
+    msg("Loaded 6 resources. Check Resource Performance.");
+  }
+</script>
+
+    </body>
+    </html>

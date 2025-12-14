@@ -1,0 +1,70 @@
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - Payment</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - Payment</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>Payment step simulation</h2>
+  <p>Creates realistic payment latency and failure patterns.</p>
+  <button onclick="payOk()">Payment OK (1.0s)</button>
+  <button onclick="paySlow()">Payment Slow (3.5s)</button>
+  <button onclick="payFail()">Payment FAIL (500)</button>
+  <button onclick="payTimeout()">Payment Timeout (504)</button>
+  <p id="pstatus" class="small"></p>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+<script>
+  const el = document.getElementById("pstatus");
+  function msg(t, cls){ el.className="small "+(cls||""); el.textContent=t; }
+
+  async function payOk(){
+    msg("Authorizing payment…");
+    await fetch("https://httpstat.us/200?sleep=1000", { cache: "no-store" }).then(r=>r.text());
+    msg("Payment success ✅", "good");
+  }
+  async function paySlow(){
+    msg("Authorizing payment (slow path)…");
+    await fetch("https://httpstat.us/200?sleep=3500", { cache: "no-store" }).then(r=>r.text());
+    msg("Payment success but slow ⚠️");
+  }
+  async function payFail(){
+    msg("Authorizing payment (failure)…");
+    await fetch("https://httpstat.us/500", { cache: "no-store" }).then(r=>r.text());
+    msg("Payment failed ❌", "bad");
+  }
+  async function payTimeout(){
+    msg("Authorizing payment (timeout)…");
+    await fetch("https://httpstat.us/504", { cache: "no-store" }).then(r=>r.text());
+    msg("Payment timeout ❌", "bad");
+  }
+</script>
+
+    </body>
+    </html>

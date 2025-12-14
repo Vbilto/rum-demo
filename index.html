@@ -1,14 +1,69 @@
-<script charset="UTF-8" type="text/javascript">
-window["adrum-start-time"] = new Date().getTime();
-(function(config){
-    config.appKey = "SY-AAC-MTW";
-    config.adrumExtUrlHttp = "http://cdn.appdynamics.com";
-    config.adrumExtUrlHttps = "https://cdn.appdynamics.com";
-    config.beaconUrlHttp = "http://syd-col.eum-appdynamics.com";
-    config.beaconUrlHttps = "https://syd-col.eum-appdynamics.com";
-    config.useHTTPSAlways = true;
-    config.resTiming = {"bufSize":200,"clearResTimingOnBeaconSend":true};
-    config.maxUrlLength = 512;
-})(window["adrum-config"] || (window["adrum-config"] = {}));
-</script>
-<script src="//cdn.appdynamics.com/adrum/adrum-25.5.0.4580.js"></script>
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - Home</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - Home</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>What this site demonstrates in AppDynamics Browser RUM</h2>
+  <ul>
+    <li><b>Multi-page user journeys</b> (Experience Journey Map + Sessions)</li>
+    <li><b>AJAX latency + failures</b> (Pages &amp; AJAX Requests)</li>
+    <li><b>JavaScript errors</b> (JavaScript Errors)</li>
+    <li><b>Slow page load</b> (End User Response Time distribution/trend)</li>
+    <li><b>Resource timing</b> (Resource Performance)</li>
+    <li><b>SPA / virtual pages</b> (Single Page App tracking)</li>
+    <li><b>Geo simulation labels</b> (creates “virtual locations” for demo segmentation)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>5‑minute demo runbook</h2>
+  <ol>
+    <li>Open <code>Journey</code> and click <b>Run Journey</b> (generates realistic flow).</li>
+    <li>Open <code>Search/AJAX</code> and run <b>Burst</b> (mix of slow + failing calls).</li>
+    <li>Open <code>JS Errors</code> and trigger <b>Uncaught</b> + <b>Promise rejection</b>.</li>
+    <li>Open <code>Slow</code> once (creates slow load outliers).</li>
+    <li>Open <code>Geo‑Sim</code> and click a few “cities” (creates location-tagged virtual pages).</li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>Where to view in AppDynamics</h2>
+  <ul>
+    <li><code>User Experience → Browser Apps → rum-demo</code></li>
+    <li><code>Pages &amp; AJAX Requests</code> (page load + XHR)</li>
+    <li><code>JavaScript Errors</code> (error types + stack traces)</li>
+    <li><code>Experience Journey Map</code> (flows)</li>
+    <li><code>Sessions</code> (session drill-down)</li>
+  </ul>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+    </body>
+    </html>

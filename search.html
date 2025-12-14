@@ -1,0 +1,91 @@
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - Search / AJAX</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - Search / AJAX</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>AJAX generator</h2>
+  <p>Use these buttons to generate measurable AJAX performance and failures.</p>
+  <button onclick="slowAjax()">Slow AJAX (2.5s)</button>
+  <button onclick="failAjax()">Fail AJAX (500)</button>
+  <button onclick="burst()">Burst (10 mixed calls)</button>
+  <p id="status" class="small"></p>
+</div>
+
+<div class="card">
+  <h2>Where it shows in AppDynamics</h2>
+  <ul>
+    <li><b>Pages &amp; AJAX Requests</b> → AJAX Requests table</li>
+    <li><b>Analyze</b> → filter by <code>request URL</code>, status, latency</li>
+  </ul>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+<script>
+  const statusEl = document.getElementById("status");
+  function setStatus(msg, cls) {
+    statusEl.className = "small " + (cls || "");
+    statusEl.textContent = msg;
+  }
+
+  async function slowAjax(){
+    setStatus("Running slow AJAX…", "");
+    const r = await fetch("https://httpstat.us/200?sleep=2500", { cache: "no-store" });
+    await r.text();
+    setStatus("Slow AJAX completed (2.5s).", "good");
+  }
+
+  async function failAjax(){
+    setStatus("Running failing AJAX…", "");
+    const r = await fetch("https://httpstat.us/500", { cache: "no-store" });
+    await r.text();
+    setStatus("Failing AJAX completed (HTTP 500).", "bad");
+  }
+
+  async function burst(){
+    setStatus("Bursting 10 calls…", "");
+    const urls = [
+      "https://httpstat.us/200?sleep=900",
+      "https://httpstat.us/200?sleep=1400",
+      "https://httpstat.us/500",
+      "https://httpstat.us/200?sleep=400",
+      "https://httpstat.us/200?sleep=2200",
+      "https://httpstat.us/503",
+      "https://httpstat.us/200?sleep=1100",
+      "https://httpstat.us/404",
+      "https://httpstat.us/200?sleep=700",
+      "https://httpstat.us/200?sleep=1800"
+    ];
+    await Promise.allSettled(urls.map(u => fetch(u, { cache: "no-store" }).then(r=>r.text())));
+    setStatus("Burst complete. Check AJAX Requests in AppDynamics.", "good");
+  }
+</script>
+
+    </body>
+    </html>

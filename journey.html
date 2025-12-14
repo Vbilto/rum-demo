@@ -1,0 +1,93 @@
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - Journey Generator</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - Journey Generator</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>Generate a realistic end-user journey</h2>
+  <p>This creates a repeatable flow: <span class="pill">Home</span> → <span class="pill">Search</span> → <span class="pill">Checkout</span> → <span class="pill">Payment</span> → <span class="pill">Resources</span>.</p>
+  <button onclick="runJourney()">Run Journey (≈30s)</button>
+  <button onclick="runJourney(true)">Run Journey (with failures)</button>
+  <p id="jstatus" class="small"></p>
+</div>
+
+<div class="card">
+  <h2>AppDynamics views to open while running</h2>
+  <ul>
+    <li><b>Experience Journey Map</b> (shows path + drop-offs)</li>
+    <li><b>Pages &amp; AJAX Requests</b> (shows backend call patterns)</li>
+    <li><b>JavaScript Errors</b> (when failures enabled)</li>
+  </ul>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+<script>
+  const s = document.getElementById('jstatus');
+  function set(t){ s.textContent = t; }
+  async function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+  async function runJourney(withFailures=false){
+    set('Starting journey…');
+
+    set('Step 1/5: Search calls…');
+    await Promise.allSettled([
+      fetch('https://httpstat.us/200?sleep=900', {cache:'no-store'}).then(r=>r.text()),
+      fetch('https://httpstat.us/200?sleep=1400', {cache:'no-store'}).then(r=>r.text()),
+      withFailures ? fetch('https://httpstat.us/500', {cache:'no-store'}).then(r=>r.text())
+                  : fetch('https://httpstat.us/200?sleep=700', {cache:'no-store'}).then(r=>r.text())
+    ]);
+    await sleep(600);
+
+    set('Step 2/5: Checkout validations…');
+    await fetch('https://httpstat.us/200?sleep=1200', {cache:'no-store'}).then(r=>r.text());
+    await fetch('https://httpstat.us/200?sleep=1600', {cache:'no-store'}).then(r=>r.text());
+    await sleep(600);
+
+    set('Step 3/5: Payment…');
+    await (withFailures ? fetch('https://httpstat.us/500', {cache:'no-store'}).then(r=>r.text())
+                        : fetch('https://httpstat.us/200?sleep=1000', {cache:'no-store'}).then(r=>r.text()));
+    await sleep(600);
+
+    set('Step 4/5: Resource load…');
+    const img = new Image();
+    img.src = 'https://speed.cloudflare.com/__down?bytes=2000000&cachebust=' + Date.now();
+    await sleep(1200);
+
+    if(withFailures){
+      set('Step 5/5: Triggering JS error…');
+      setTimeout(()=>{ undefinedFunctionCall(); }, 100);
+      await sleep(400);
+    }
+
+    set('Journey complete. Open AppDynamics → Sessions / Journey Map to view.');
+  }
+</script>
+
+    </body>
+    </html>

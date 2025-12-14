@@ -1,0 +1,89 @@
+<!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>RUM Demo - Geo Simulation (Virtual)</title>
+      <script src="./assets/appd-rum.js"></script>
+      <link rel="stylesheet" href="./assets/style.css" />
+
+    </head>
+    <body>
+      <header>
+        <h1>RUM Demo - Geo Simulation (Virtual)</h1>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./journey.html">Journey</a>
+          <a href="./search.html">Search/AJAX</a>
+          <a href="./checkout.html">Checkout</a>
+          <a href="./payment.html">Payment</a>
+          <a href="./resource.html">Resources</a>
+          <a href="./slow.html">Slow</a>
+          <a href="./errors.html">JS Errors</a>
+          <a href="./spa.html">SPA</a>
+          <a href="./geo-sim.html">Geo-Sim</a>
+        </nav>
+      </header>
+
+
+<div class="card">
+  <h2>Virtual geo simulation for demos</h2>
+  <p><b>Important:</b> AppDynamics real Geo dashboards are based on <b>client IP location</b>. Without VPN/proxies you can’t truly generate real countries/cities from a single laptop.</p>
+  <p>This page provides a <b>demo-friendly alternative</b>: it creates <b>city-tagged virtual pages</b> (e.g., <code>Checkout-Mumbai</code>, <code>Checkout-London</code>) so you can show segmentation and correlation inside AppDynamics.</p>
+</div>
+
+<div class="card">
+  <h2>Choose a “city” and generate traffic</h2>
+  <button onclick="city('Mumbai')">Mumbai</button>
+  <button onclick="city('Bengaluru')">Bengaluru</button>
+  <button onclick="city('Singapore')">Singapore</button>
+  <button onclick="city('London')">London</button>
+  <button onclick="city('NewYork')">New York</button>
+  <button onclick="city('Sydney')">Sydney</button>
+  <button onclick="burst()">Burst (all cities)</button>
+  <p id="g" class="small"></p>
+</div>
+
+<div class="card">
+  <h2>If you want REAL geo maps</h2>
+  <ul>
+    <li>Open the same site via a VPN exit in different countries (or ask colleagues in those regions to open it).</li>
+    <li>Then AppDynamics Geo Dashboard will show actual countries/cities.</li>
+  </ul>
+</div>
+
+
+      <p class="small">Tip: While generating traffic, set AppDynamics time range to <b>Last 15 minutes</b> for quick feedback.</p>
+
+
+<script>
+  const el = document.getElementById("g");
+  function msg(t){ el.textContent=t; }
+
+  async function simulateStep(cityName){
+    msg("Simulating for " + cityName + "…");
+
+    if (window.ADRUM && typeof window.ADRUM.markVirtualPageLoad === "function") {
+      window.ADRUM.markVirtualPageLoad("Checkout-" + cityName);
+    }
+
+    const lat = { Mumbai: 1400, Bengaluru: 900, Singapore: 700, London: 1800, NewYork: 2100, Sydney: 1100 }[cityName] || 1200;
+
+    await fetch("https://httpstat.us/200?sleep=" + lat, {cache:"no-store"}).then(r=>r.text());
+    await fetch("https://httpstat.us/200?sleep=" + Math.max(300, lat-500), {cache:"no-store"}).then(r=>r.text());
+
+    msg("Done for " + cityName + ". Check Pages & Sessions in AppDynamics.");
+  }
+
+  function city(c){ simulateStep(c); }
+
+  async function burst(){
+    const cities = ["Mumbai","Bengaluru","Singapore","London","NewYork","Sydney"];
+    for(const c of cities){
+      await simulateStep(c);
+    }
+  }
+</script>
+
+    </body>
+    </html>
